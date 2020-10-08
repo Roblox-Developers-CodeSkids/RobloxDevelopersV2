@@ -18,7 +18,7 @@ setInterval(() => (msgs = {}), spamCleanup);
 
 class MessageCreate extends Listener {
   constructor() {
-    super('ready', {
+    super('messageCreate', {
       emitter: 'client',
       event: 'message',
     });
