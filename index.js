@@ -14,11 +14,15 @@ class Bot extends AkairoClient {
 
     this.commandHandler = new CommandHandler(this, {
       directory: './commands/',
-      prefix: ['`', '='],
+      prefix: [',', '='],
     });
 
     this.listenerHandler = new ListenerHandler(this, {
       directory: './events/',
+    });
+
+    this.listenerHandler.setEmitters({
+      process,
     });
 
     this.commandHandler.loadAll();
@@ -27,9 +31,5 @@ class Bot extends AkairoClient {
 }
 
 const bot = new Bot();
-
-bot.on('ready', () => {
-  console.log('Bot is ready!');
-});
 
 bot.login(process.env.TOKEN);
