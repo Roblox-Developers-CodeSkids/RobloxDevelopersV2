@@ -41,4 +41,4 @@ class PostCommand extends Command {
   }
 }
 
-module.exports = TestCommand;
+module.exports = PostCommand;
