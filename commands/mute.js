@@ -1,5 +1,9 @@
 const { Command } = require('discord-akairo');
 const ms = require('ms');
+const { parse } = require('toml');
+const { readFileSync } = require('fs');
+
+let { muted } = parse(readFileSync('config.toml'));
 
 class MuteCommand extends Command {
   constructor() {
@@ -13,6 +17,7 @@ class MuteCommand extends Command {
         {
           id: 'time',
           type: 'string',
+          default: false,
         },
       ],
       clientPermissions: ['KICK_MEMBERS'],
@@ -24,26 +29,25 @@ class MuteCommand extends Command {
   async exec(msg, args) {
     if (!args.member) return msg.reply('No member found');
 
-    if (!args.time) return msg.reply('Please Specify a time!');  
+    if (!args.time) return msg.reply('Please Specify a time!');
 
-    let mmber = args.member;
+    let member = args.member;
 
     // let mainrole = msg.guild.roles.cache.find(role => role.name  === "ROLENAMEHERE")
-    let MuteRole = msg.guild.roles.cache.get("484337500333277214");  //replace with server role id 
+    //replace with server role id
 
-    if(!MuteRole) return msg.reply("Cant find the Mute Role!");
+    if (!muted) return msg.reply('Cant find the Mute Role!');
 
     let time = args.time;
 
     //person.roles.remove(mainrole.id);
-    mmber.roles.add(MuteRole.id); 
-    msg.channel.send(`@${mmber.user.tag} has been muted for ${ms(ms(time))}`)
+    member.roles.add(muted);
+    msg.channel.send(`@${member.user.tag} has been muted for ${ms(ms(time))}`);
 
-    setTimeout(function(){
-        //person.roles.add(mainrole.id)
-        mmber.roles.remove(MuteRole.id) //removes mute role
-        msg.channel.send(`@${mmber.user.tag} has been unmuted`);
-
+    setTimeout(function () {
+      //person.roles.add(mainrole.id)
+      member.roles.remove(muted); //removes mute role
+      msg.channel.send(`@${member.user.tag} has been unmuted`);
     }, ms(time));
   }
 }
