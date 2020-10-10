@@ -28,27 +28,30 @@ class MuteCommand extends Command {
 
   async exec(msg, args) {
     if (!args.member) return msg.reply('No member found');
-
-    if (!args.time) return msg.reply('Please Specify a time!');
-
     let member = args.member;
 
-    // let mainrole = msg.guild.roles.cache.find(role => role.name  === "ROLENAMEHERE")
+    // let mainrole = msg.guild.roles.cache.find(role => role.name  === "roleNameHere")
     //replace with server role id
 
-    if (!muted) return msg.reply('Cant find the Mute Role!');
+    if (!muted) return msg.reply('Can not find the Mute Role!');
 
     let time = args.time;
 
     //person.roles.remove(mainrole.id);
-    member.roles.add(muted);
-    msg.channel.send(`@${member.user.tag} has been muted for ${ms(ms(time))}`);
+    if (args.muted) {
+      member.roles.add(muted);
+      msg.channel.send(
+        `@${member.user.tag} has been muted for ${ms(ms(time))}`
+      );
 
-    setTimeout(function () {
-      //person.roles.add(mainrole.id)
-      member.roles.remove(muted); //removes mute role
-      msg.channel.send(`@${member.user.tag} has been unmuted`);
-    }, ms(time));
+      setTimeout(function () {
+        member.roles.remove(muted); //removes mute role
+        msg.channel.send(`@${member.user.tag} has been unmuted`);
+      }, ms(time));
+    } else {
+      member.roles.add(muted);
+      msg.channel.send(`@${member.user.tag} has been muted`);
+    }
   }
 }
 
