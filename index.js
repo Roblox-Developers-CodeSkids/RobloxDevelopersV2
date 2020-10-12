@@ -14,6 +14,7 @@ const bot = new Client({
       : process.env.DEVELOPMENT,
   allowMention: true,
   prefix: process.env.NODE_ENV == 'production' ? ',' : 'dev;',
+  defaultCommand: require('./commands/hello'),
 });
 
 bot.addCommandDir(join(__dirname, 'commands'));
@@ -31,4 +32,12 @@ for (let file of readdirSync(join(__dirname, 'events'))) {
   }
 }
 
-bot.connect();
+bot.connect().then(() => {
+  bot.editStatus('online', {
+    name: `${bot.prefix}help${
+      process.env.NODE_ENV == 'production' ? '' : ' | development mode!'
+    }`,
+    type: 3,
+    url: 'https://twitch.tv/lua',
+  });
+});
