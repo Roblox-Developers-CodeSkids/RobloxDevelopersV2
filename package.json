@@ -10,6 +10,7 @@
     "ejs": "^3.1.5",
     "eris": "^0.13.3",
     "erlpack": "abalabahaha/erlpack",
+    "jsdoc": "^3.6.6",
     "lodash": "^4.17.20",
     "ms": "^2.1.2",
     "toml": "^3.0.0",
@@ -22,6 +23,7 @@
   },
   "scripts": {
     "prettier": "prettier --write .",
+    "jsdoc": "node_modules/.bin/jsdoc node_modules/eris/lib -r -X -d console",
     "start": "node ."
   }
 }

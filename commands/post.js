@@ -12,7 +12,7 @@ const { parse } = require('toml');
 const { readFileSync } = require('fs');
 
 let {
-  hiring: { approved, unapprove, ban, allowed, notAllowed, logs },
+  hiring: { approved, unapprove, ban, notAllowed, logs },
 } = parse(readFileSync('config.toml'));
 
 let plate = new Template({
@@ -25,7 +25,7 @@ let plate = new Template({
 });
 
 let exit = (msg, prompt) => {
-  msg.reply('Canceled!');
+  msg.channel.createMessage('Canceled!');
   prompt.reply('Canceled');
   prompt.close();
 };
@@ -35,9 +35,6 @@ module.exports = new Command('post', async (msg, _, { client }) => {
 
   if (roles.find((role) => notAllowed.find((banned) => role == banned)))
     return msg.channel.createMessage('You are banned from hiring!');
-
-  if (!roles.find((role) => allowed.find((allowed) => role == allowed)))
-    return msg.channel.createMessage('You are not high enough level to hire!');
 
   try {
     (await msg.author.getDMChannel()).createMessage('Mail incoming...');
