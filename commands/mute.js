@@ -15,14 +15,14 @@ module.exports = new Command('mute', async (message, args) => {
   if (args[1]) {
     let time = args[1];
     member.addRole(muted);
-    message.channel.createMessage(`@${member.user.mention} has been muted for ${ms(ms(time))}`);
+    message.channel.createMessage(`${member.user.mention} has been muted for ${ms(ms(time))}`);
 
     setTimeout(function () {
       member.removeRole(muted); //removes mute role
-      message.channel.createMessage(`@${member.user.mention} has been unmuted`);
+      message.channel.createMessage(`${member.user.mention} has been unmuted`);
     }, ms(time));
   }else{
     member.addRole(muted);
-    message.channel.createMessage(`@${member.user.mention} has been muted`);
+    message.channel.createMessage(`${member.user.mention} has been muted`);
   }
 });
