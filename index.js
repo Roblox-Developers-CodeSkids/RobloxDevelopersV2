@@ -8,9 +8,12 @@ const logger = require('./logger');
 require('dotenv').config();
 
 const bot = new Client({
-  token: process.env.TOKEN,
+  token:
+    process.env.NODE_ENV == 'production'
+      ? process.env.TOKEN
+      : process.env.DEVELOPMENT,
   allowMention: true,
-  prefix: ',',
+  prefix: process.env.NODE_ENV == 'process' ? ',' : 'dev;',
 });
 
 bot.addCommandDir(join(__dirname, 'commands'));
