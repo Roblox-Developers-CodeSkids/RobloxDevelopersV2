@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const MessageEmbed = require('./embed');
 const { render } = require('ejs');
 
 const { clone } = require('lodash');
@@ -29,6 +29,7 @@ class Template extends MessageEmbed {
       if (typeof val == 'string')
         return render(val, env, {
           escape: (text) => text,
+          context: env,
         });
     });
 
@@ -40,6 +41,7 @@ class Template extends MessageEmbed {
       if (typeof val == 'string')
         return render(val, env, {
           escape: (text) => text,
+          context: env,
         });
     });
 

@@ -1,11 +1,11 @@
-const { Listener } = require('discord-akairo');
+const { Event } = require('../libs/event');
 
 const { parse } = require('toml');
 const { readFileSync } = require('fs');
 
 const ms = require('ms');
 
-let { muted, spamLimit, spamCleanup, spamTimeout } = parse(
+let { muted, spamLimit, spamCleanup, spamTimeout, spamDisabled } = parse(
   readFileSync('config.toml')
 );
 
@@ -16,16 +16,14 @@ let msgs = {};
 
 setInterval(() => (msgs = {}), spamCleanup);
 
-class MessageCreate extends Listener {
+class MessageCreate extends Event {
   constructor() {
-    super('messageCreate', {
-      emitter: 'client',
-      event: 'message',
-    });
+    super('messageCreate', 'client');
   }
 
   exec(msg) {
     if (msg.author.bot) return; //checks if its a bot
+    if (spamDisabled) return;
 
     msgs[msg.author.id] = msgs[msg.author.id] ? msgs[msg.author.id] + 1 : 1;
 

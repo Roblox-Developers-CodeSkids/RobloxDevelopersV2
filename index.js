@@ -1,35 +1,31 @@
-const {
-  AkairoClient,
-  CommandHandler,
-  ListenerHandler,
-} = require('discord-akairo');
+const { Client } = require('yuuko');
+const { join } = require('path');
+
+const { readdirSync } = require('fs');
+
+const logger = require('./logger');
 
 require('dotenv').config();
 
-class Bot extends AkairoClient {
-  constructor() {
-    super({
-      ownerID: '525840152103223338',
-    });
+const bot = new Client({
+  token: process.env.TOKEN,
+  allowMention: true,
+  prefix: ',',
+});
 
-    this.commandHandler = new CommandHandler(this, {
-      directory: './commands/',
-      prefix: [',', '='],
-    });
+bot.addCommandDir(join(__dirname, 'commands'));
 
-    this.listenerHandler = new ListenerHandler(this, {
-      directory: './events/',
-    });
+for (let file of readdirSync(join(__dirname, 'events'))) {
+  let event = require(`./events/${file.substring(0, file.length - 3)}`);
 
-    this.listenerHandler.setEmitters({
-      process,
-    });
-
-    this.commandHandler.loadAll();
-    this.listenerHandler.loadAll();
+  if (event) {
+    let constructed = new event();
+    constructed.register(bot);
+    constructed.client = bot;
+    logger.debug(
+      `Listening to ${constructed.listener}.${constructed.toListen}`
+    );
   }
 }
 
-const bot = new Bot();
-
-bot.login(process.env.TOKEN);
+bot.connect();

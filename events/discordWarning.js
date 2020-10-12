@@ -1,13 +1,10 @@
-const { Listener } = require('discord-akairo');
+const { Event } = require('../libs/event');
 
 const logger = require('../logger');
 
-class DiscordWarning extends Listener {
+class DiscordWarning extends Event {
   constructor() {
-    super('discordWarning', {
-      emitter: 'client',
-      event: 'warn',
-    });
+    super('discordWarning', 'client');
   }
 
   exec(err) {

@@ -1,17 +1,14 @@
-const { Listener } = require('discord-akairo');
+const { Event } = require('../libs/event');
 
 const logger = require('../logger');
 
-class UncaughtException extends Listener {
+class UncaughtException extends Event {
   constructor() {
-    super('uncaughtException', {
-      emitter: 'process',
-      event: 'uncaughtException',
-    });
+    super('uncaughtException', 'process');
   }
 
-  exec(err) {
-    logger.error(err);
+  exec(err, stack) {
+    logger.error(err, stack);
   }
 }
 

@@ -1,13 +1,10 @@
-const { Listener } = require('discord-akairo');
+const { Event } = require('../libs/event');
 
 const logger = require('../logger');
 
-class OnReady extends Listener {
+class OnReady extends Event {
   constructor() {
-    super('ready', {
-      emitter: 'client',
-      event: 'ready',
-    });
+    super('ready', 'client');
   }
 
   exec() {

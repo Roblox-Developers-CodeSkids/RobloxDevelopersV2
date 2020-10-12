@@ -1,23 +1,11 @@
-const { Command } = require('discord-akairo');
+const { Command } = require('yuuko');
 
-class PingCommand extends Command {
-  constructor() {
-    super('ping', {
-      aliases: ['ping', 'hello'],
-    });
-  }
+module.exports = new Command('ping', async (message) => {
+  const sent = await message.channel.createMessage('Pong!');
 
-  async exec(message) {
-    const sent = await message.channel.send('Pong!');
-    const timeDiff =
-      (sent.editedAt || sent.createdAt) -
-      (message.editedAt || message.createdAt);
-    return sent.edit(
-      `Pong!\n🔂 **RTT**: ${timeDiff} ms\n💟 **Heartbeat**: ${Math.round(
-        this.client.ws.ping
-      )} ms`
-    );
-  }
-}
+  const timeDiff =
+    (sent.editedTimestamp || sent.timestamp) -
+    (message.editedTimestamp || message.timestamp);
 
-module.exports = PingCommand;
+  return sent.edit(`Pong!\n🔂 **RTT**: ${timeDiff} ms`);
+});

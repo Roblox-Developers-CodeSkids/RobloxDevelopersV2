@@ -1,3 +1,5 @@
+const logger = require('../logger');
+
 let waitFor = (emitter, event, timeout, predicate) => {
   return new Promise((resolve, reject) => {
     let fn = (...varArg) => {
@@ -17,7 +19,7 @@ let waitFor = (emitter, event, timeout, predicate) => {
       setTimeout(() => {
         emitter.removeListener(event, fn);
 
-        reject(false);
+        reject('timeout');
       }, timeout);
   });
 };
@@ -27,11 +29,13 @@ let prompts = {};
 class Prompter {
   constructor(msg, client, config) {
     if (prompts[msg.author.id])
-      return msg.channel.send('Finish the current prompt!');
+      return msg.channel.createMessage('Finish the current prompt!');
 
     prompts[msg.author.id] = true;
 
     this.id = msg.author.id;
+    this.sender = msg.author.tag;
+
     this.stage = -1;
 
     this.data = {};
@@ -50,7 +54,7 @@ class Prompter {
       try {
         let msg = await waitFor(
           this.client,
-          'message',
+          'messageCreate',
           this.timeout,
           (received) => {
             return (
@@ -59,10 +63,18 @@ class Prompter {
             );
           }
         );
-        this.handle(msg);
-        loop();
-      } catch {
-        this.channel.send('Closing prompt! Reason: Timeout');
+
+        if (!this.closed) {
+          this.handle(msg);
+          loop();
+        }
+      } catch (e) {
+        if (e == 'timeout' && !this.closed) {
+          this.channel.createMessage('Closing prompt! Reason: Timeout');
+        } else {
+          logger.error(e);
+          this.channel.createMessage('Unexpected error, closing!');
+        }
         if (!this.closed) this.close();
       }
     };
@@ -95,7 +107,7 @@ class Prompter {
   }
 
   reply(content) {
-    return this.channel.send(content);
+    return this.channel.createMessage(content);
   }
 
   save(key, val) {
@@ -107,27 +119,33 @@ class Prompter {
   }
 
   handle(msg) {
-    this.tasks[this.stage].action(msg.content || null, this, msg);
+    this.tasks[this.stage].action(msg?.content || null, this, msg);
   }
 
   update() {
     let message = this.tasks[this.stage].message;
 
-    if (!message) return this.channel.send('Fatal error: No more tasks found');
+    if (!message)
+      return this.channel.createMessage('Fatal error: No more tasks found');
 
     if (message == 'now') {
       this.handle();
     } else if (message != 'none') {
       if (message.render) {
         let rendered = message.render({
-          get: this.get,
+          get: (key) => this.data[key],
           step: this.stage,
           timeout: this.timeout,
+          user: this.sender,
+          id: this.id,
+          JSON,
         });
 
-        this.channel.send(rendered);
+        this.channel.createMessage({ embed: rendered });
       } else {
-        this.channel.send(message);
+        this.channel.createMessage(
+          typeof message == 'object' ? { embed: message } : message
+        );
       }
     }
   }
