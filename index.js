@@ -13,7 +13,7 @@ const bot = new Client({
       ? process.env.TOKEN
       : process.env.DEVELOPMENT,
   allowMention: true,
-  prefix: process.env.NODE_ENV == 'process' ? ',' : 'dev;',
+  prefix: process.env.NODE_ENV == 'production' ? ',' : 'dev;',
 });
 
 bot.addCommandDir(join(__dirname, 'commands'));
