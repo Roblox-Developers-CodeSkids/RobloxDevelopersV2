@@ -71,7 +71,7 @@ class Prompter {
       } catch (e) {
         if (e == 'timeout' && !this.closed) {
           this.channel.createMessage('Closing prompt! Reason: Timeout');
-        } else {
+        } elseif (!this.closed) {
           logger.error(e);
           this.channel.createMessage('Unexpected error, closing!');
         }
