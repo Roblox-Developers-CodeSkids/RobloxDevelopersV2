@@ -1,8 +1,6 @@
 const { Event } = require('../libs/event');
-
-const { parse } = require('toml');
 const { readFileSync } = require('fs');
-
+const { parse } = require('toml');
 const ms = require('ms');
 
 let { muted, spamLimit, spamCleanup, spamTimeout, spamDisabled } = parse(
@@ -27,18 +25,23 @@ class MessageCreate extends Event {
 
     msgs[msg.author.id] = msgs[msg.author.id] ? msgs[msg.author.id] + 1 : 1;
 
-    if (msgs[msg.author.id] >= spamLimit) {
-      msg.member.roles.add(muted, 'Auto-mod; spam');
 
-      msg.channel.send(
-        `${msg.author.tag} has been muted for ${ms(spamTimeout, {
+    const member = msg.member;
+
+    if (msgs[msg.author.id] >= spamLimit) {
+      member.addRole(muted, 'Auto-mod; spam');
+
+      msg.channel.createMessage(
+        `${member.user.mention} has been muted for ${ms(spamTimeout, {
           long: true,
         })} for spam.`
       );
 
+
+      
       setTimeout(() => {
         msgs[msg.author.id] = 0;
-        msg.member.roles.remove(muted, 'Auto-mod; unmute');
+        member.removeRole(muted, 'Auto-mod; unmute');
       }, spamTimeout);
     }
   }
