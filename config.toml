@@ -3,7 +3,7 @@ muted = "484337500333277214"
 spamTimeout = "30m"
 spamCleanup = "10s"
 spamLimit = 7
-spamDisabled = true
+spamDisabled = false
 
 [showcase]
 channels = [

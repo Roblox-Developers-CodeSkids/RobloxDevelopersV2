@@ -10,4 +10,6 @@ RUN npm i
 
 COPY . .
 
+ENV NODE_ENV=production
+
 CMD ["pm2-runtime", "index.js"]
