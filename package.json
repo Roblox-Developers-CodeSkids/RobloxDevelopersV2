@@ -13,6 +13,7 @@
     "js-levenshtein": "^1.1.6",
     "jsdoc": "^3.6.6",
     "lodash": "^4.17.20",
+    "mongoose": "^5.10.9",
     "ms": "^2.1.2",
     "toml": "^3.0.0",
     "winston": "^3.3.3",
@@ -26,5 +27,8 @@
     "prettier": "prettier --write .",
     "jsdoc": "node_modules/.bin/jsdoc node_modules/eris/lib -r -X -d console",
     "start": "node ."
+  },
+  "engines": {
+    "node": ">=14"
   }
 }

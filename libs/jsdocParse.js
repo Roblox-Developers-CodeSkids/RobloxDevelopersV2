@@ -5,6 +5,7 @@ Credit: https://github.com/Geo1088/eris-docs-bot/blob/master/misc/jsdoc_parse.js
 'use strict';
 
 const childProcess = require('child_process');
+const fs = require('fs');
 // Version info, etc. can be found in package.json
 const erisPackage = require('../node_modules/eris/package');
 
@@ -13,14 +14,24 @@ const logger = require('../logger');
 logger.info('Loading Eris docs...');
 
 // Execute jsdoc, get the JSON output, parse it, and store it.
-const rawDocsData = JSON.parse(
-  childProcess
-    .execSync('yarn --silent run jsdoc', {
-      encoding: 'utf8',
-      maxBuffer: Infinity,
-    })
-    .replace(/^> [^\n]*/gm, (m) => logger.info(m) || '')
-);
+
+let rawDocsData;
+
+if (fs.existsSync('./cache/jsdoc_dump.json')) {
+  rawDocsData = JSON.parse(fs.readFileSync('./cache/jsdoc_dump.json'));
+  logger.info('Using cache!');
+} else {
+  rawDocsData = JSON.parse(
+    childProcess
+      .execSync('yarn --silent run jsdoc', {
+        encoding: 'utf8',
+        maxBuffer: Infinity,
+      })
+      .replace(/^> [^\n]*/gm, (m) => logger.info(m) || '')
+  );
+
+  fs.writeFileSync('./cache/jsdoc_dump.json', JSON.stringify(rawDocsData));
+}
 // We'll clean up the info and write what we want here
 const classes = [];
 const constants = [];
