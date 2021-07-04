@@ -202,7 +202,13 @@ module.exports = new Command(
                 } else if (action == 'lfw') {
                   prompt.save('title', content);
                 }
-
+                
+                var charTable = content.split("");
+                if(charTable.length > 1024){
+                  prompt.reply("Discription too big!");
+                  return prompt.redo();
+                }  
+                
                 prompt.next();
               },
             },
